@@ -1,12 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { PhoneContext } from './PhoneContext'; // Import PhoneContext
 
 const SuccessScreen = () => {
   const navigation = useNavigation();
+  const { phoneNumber } = useContext(PhoneContext); // Get phone number from context
 
   const handleGoBack = () => {
-    // Quay lại màn hình chính hoặc trang nào khác mà bạn muốn
     navigation.popToTop();
   };
 
@@ -14,7 +15,7 @@ const SuccessScreen = () => {
     <View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.header}>Chúc mừng!</Text>
-        <Text style={styles.message}>Đăng nhập thành công</Text>
+        <Text style={styles.message}>Số điện thoại {phoneNumber} đã đăng nhập thành công</Text>
 
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <Text style={styles.buttonText}>Quay về trang chính</Text>

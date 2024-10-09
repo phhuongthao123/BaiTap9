@@ -1,14 +1,18 @@
+// LoginScreen.js
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Alert, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { PhoneContext } from './PhoneContext'; // Import PhoneContext
 
 const LoginScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const navigation = useNavigation();
+  const { setPhoneNumber: setContextPhoneNumber } = useContext(PhoneContext); // Use setPhoneNumber from context
 
   const handleContinue = () => {
-    const phoneRegex = /^0[0-9]{9}$/; // Updated regex to ensure the number starts with '0'
+    const phoneRegex = /^0[0-9]{9}$/; // Regex to ensure the number starts with '0'
     if (phoneRegex.test(phoneNumber)) {
+      setContextPhoneNumber(phoneNumber); // Save phone number to context
       navigation.navigate('OTPScreen', { phoneNumber });
     } else {
       Alert.alert('Lỗi', 'Vui lòng nhập số điện thoại hợp lệ.');
@@ -41,7 +45,6 @@ const LoginScreen = () => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
