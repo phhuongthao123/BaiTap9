@@ -1,19 +1,22 @@
 // LoginScreen.js
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Alert, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { PhoneContext } from './PhoneContext'; // Import PhoneContext
 
 const LoginScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const navigation = useNavigation();
-  const { setPhoneNumber: setContextPhoneNumber } = useContext(PhoneContext); // Use setPhoneNumber from context
 
-  const handleContinue = () => {
-    const phoneRegex = /^0[0-9]{9}$/; // Regex to ensure the number starts with '0'
+  const handleContinue = async () => {
+    const phoneRegex = /^0[0-9]{9}$/; // Regex đảm bảo số điện thoại bắt đầu bằng '0'
     if (phoneRegex.test(phoneNumber)) {
-      setContextPhoneNumber(phoneNumber); // Save phone number to context
-      navigation.navigate('OTPScreen', { phoneNumber });
+      try {
+        await AsyncStorage.setItem('phoneNumber', phoneNumber); // Lưu số điện thoại vào AsyncStorage
+        navigation.navigate('HomeScreen'); // Chuyển sang màn hình HomeScreen
+      } catch (error) {
+        Alert.alert('Lỗi', 'Không thể lưu số điện thoại.');
+      }
     } else {
       Alert.alert('Lỗi', 'Vui lòng nhập số điện thoại hợp lệ.');
     }
@@ -45,6 +48,7 @@ const LoginScreen = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -58,13 +62,10 @@ const styles = StyleSheet.create({
     padding: 20,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    marginBottom: 20, // Dịch card lên trên
+    marginBottom: 20,
   },
   header: {
     fontSize: 30,
@@ -89,13 +90,13 @@ const styles = StyleSheet.create({
     color: '#7F8C8D',
   },
   button: {
-    backgroundColor: '#F291A3', // Màu nền nút
+    backgroundColor: '#F291A3',
     borderRadius: 5,
     paddingVertical: 15,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff', // Màu chữ nút
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },

@@ -1,6 +1,5 @@
 # KET QUA
 # Login Screen
 ![alt text](image5.jpg)
-![alt text](image2.jpg)
-# Success Screen
+# Home Screen
 ![alt text](image.png)

@@ -1,14 +1,35 @@
+// HomeScreen.js
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { PhoneContext } from './PhoneContext'; // Import PhoneContext
+import React, { useEffect, useState } from 'react';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const SuccessScreen = () => {
+const HomeScreen = () => {
+  const [phoneNumber, setPhoneNumber] = useState('');
   const navigation = useNavigation();
-  const { phoneNumber } = useContext(PhoneContext); // Get phone number from context
 
-  const handleGoBack = () => {
-    navigation.popToTop();
+  useEffect(() => {
+    const getPhoneNumber = async () => {
+      try {
+        const value = await AsyncStorage.getItem('phoneNumber');
+        if (value !== null) {
+          setPhoneNumber(value);
+        }
+      } catch (error) {
+        Alert.alert('Lỗi', 'Không thể lấy số điện thoại.');
+      }
+    };
+
+    getPhoneNumber();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('phoneNumber'); // Xóa số điện thoại khỏi AsyncStorage
+      navigation.navigate('LoginScreen'); // Quay lại màn hình đăng nhập
+    } catch (error) {
+      Alert.alert('Lỗi', 'Không thể đăng xuất.');
+    }
   };
 
   return (
@@ -17,8 +38,8 @@ const SuccessScreen = () => {
         <Text style={styles.header}>Chúc mừng!</Text>
         <Text style={styles.message}>Số điện thoại {phoneNumber} đã đăng nhập thành công</Text>
 
-        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-          <Text style={styles.buttonText}>Quay về trang chính</Text>
+        <TouchableOpacity style={styles.button} onPress={handleLogout}>
+          <Text style={styles.buttonText}>Đăng xuất</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -39,10 +60,7 @@ const styles = StyleSheet.create({
     padding: 20,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
     alignItems: 'center',
@@ -74,4 +92,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SuccessScreen;
+export default HomeScreen;
